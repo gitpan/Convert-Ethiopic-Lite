@@ -8,7 +8,7 @@ BEGIN
 	use strict;
 	use vars qw($VERSION @ENumbers %ENumbers);
 
-	$VERSION = '0.12';
+	$VERSION = '0.13';
 
 	require 5.000;
 
@@ -146,6 +146,11 @@ my $number = $_[0]->{number};
 
 	my $n = length ( $number ) - 1;
 
+	# map and return a single digit number
+	# don't waste time with the loop:
+	return ( $ENumbers[$number-1] ) unless ( $n );
+
+
 	unless ( $n % 2 ) {
 		#
 		#  Add dummy leading 0 to precondition the number for
@@ -181,7 +186,7 @@ my $number = $_[0]->{number};
 
 
 		#
-		#  pos tracks our 'pos'ition in sequence of 4 digits
+		#  pos tracks our 'pos'ition in a sequence of 4 digits
 		#  to help determine what separator we need between
 		#  a groupings of tens and ones.
 		#
@@ -208,7 +213,8 @@ my $number = $_[0]->{number};
 		#  combined into a single big test but gets harder to read
 		#  and manage:
 		#
-		if ( ( $eOne eq '፩' ) && ( $eTen eq '' ) && ( $n > 1 ) ) {
+		# if ( ( $eOne eq '፩' ) && ( $eTen eq '' ) && ( $n > 1 ) ) {
+		if ( ( $eOne eq '፩' ) && ( $eTen eq '' ) ) {
 			if ( $sep eq '፻' ) {
 				#
 				#  A superflous implied ፩ before ፻
@@ -274,7 +280,7 @@ __END__
 
 =head1 NAME
 
-Convert::Ethiopic::Lite::Number - Convert Between Western and Ethiopic Numerals Systems
+Convert::Ethiopic::Lite::Number - Convert Between Western and Ethiopic Numeral Systems
 
 =head1 SYNOPSIS
 
