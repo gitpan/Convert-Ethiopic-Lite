@@ -13,7 +13,7 @@ BEGIN
   $| = 1;
   unshift @INC,'../lib';
   chdir 't' if -d 't';
-  plan tests => 82;
+  plan tests => 96;
   }
 END 
   {
@@ -83,14 +83,28 @@ my @testNumbers = (
 	"100001",
 	"100010",
 	"100011",
+	"100100",
 	"101010",
 	"1000001",
 	"1000101",
+	"1000100",
 	"1010000",
 	"1010001",
 	"1100001",
 	"1010101",
 	"101010101",
+	"10000",
+	"100000",
+	"1000000",
+	"10000000",
+	"100000000",
+	"1000000000",
+	"10000000000",
+	"100000000000",
+	"1000000000000",
+	"100010000",
+	"100010100",
+	"101010100",
 	"3",
 	"30",
 	"33",
@@ -111,7 +125,7 @@ my @testNumbers = (
 	"3300003",
 	"3030303",
 	"303030303",
-	"333333333",
+	"333333333"
 );
 
 
@@ -126,7 +140,7 @@ foreach ( @testNumbers ) {
 	my $number = $n->convert;  # convert to ethiopic
 	my $compare = $n->convert ( $number );   # convert back to arabic
 
-	print " # '$test' converted to '$number' and reconverted '$compare'\n" 
+	print STDERR " # '$test' converted to '$number' and reconverted '$compare'\n" 
 		unless ok ($compare,$test);
 }
 1;

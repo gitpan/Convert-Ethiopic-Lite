@@ -8,12 +8,12 @@ BEGIN
 	use strict;
 	use vars qw($VERSION @ENumbers %ENumbers);
 
-	$VERSION = '0.11';
+	$VERSION = '0.12';
 
 	require 5.000;
 
 	@ENumbers =(
-		"፩",  "፪",  "፫",  "፬",  "፭",  "፮",  "፯",  "፰",  "፱",
+		"፩", "፪", "፫", "፬", "፭", "፮", "፯", "፰", "፱",
 		"፲", "፳", "፴", "፵", "፶", "፷", "፸", "፹", "፺",
 		"፻", "፼"
 	);
@@ -98,7 +98,7 @@ sub _fromEthiopic
 	#
 	s/([፻፼])([፩-፱])/$1."0$2"/ge;    # add 0 if tens place empty
 	s/([፲-፺])([^፩-፱])/$1."0$2"/ge;  # add 0 if ones place empty
-	s/([፲-፺])$/$1."0"/e;                  # repeat at end of string
+	s/([፲-፺])$/$1."0"/e;            # repeat at end of string
 
 	# print "$_ => ";
 
@@ -110,20 +110,22 @@ sub _fromEthiopic
 	# pad 0s for ilf
 	#
 	s/፼$/፼0000/;
-	s/፼፼/፼0000፼/g;
+	s/፼፼/፼0000፼/g;  # since /g doesn't work the first time..
+	s/፼፼/፼0000፼/g;  # ...we do it again!
 	s/፻፼/፼00፼/g;
 	s/፼0([፩-፱])፼/፼000$1፼/g;
-	s/፼0([፩-፱])$/፼000$1/;            # repeat at end of string
+	s/፼0([፩-፱])$/፼000$1/;          # repeat at end of string
 	s/፼([፲-፺]0)፼/፼00$1፼/g;
-	s/፼([፲-፺]0)$/፼00$1/;             # repeat at end of string
+	s/፼([፲-፺]0)$/፼00$1/;           # repeat at end of string
 	s/፼([፩-፺]{2})፼/፼00$1፼/g;
-	s/፼([፩-፺]{2})$/፼00$1/;           # repeat at end of string
+	s/፼([፩-፺]{2})$/፼00$1/;         # repeat at end of string
 
 
 	# s/፼/፻፻/g;
 	s/(፻)$/$1."00"/e;  # this is stupid but tricks perl 5.6 into working
 
 	s/[፻፼]//g;
+
 	# fold tens:
 	#
 	tr/[፲-፺]/[፩-፱]/;
@@ -142,54 +144,89 @@ sub _toEthiopic
 {
 my $number = $_[0]->{number};
 
+	my $n = length ( $number ) - 1;
+
+	unless ( $n % 2 ) {
+		#
+		#  Add dummy leading 0 to precondition the number for
+		#  the algorithm and reduce one logic test within the
+		#  for loop
+		#
+		$number = "0$number";
+		$n++;
+	}
+
 	my @aNumberString = split ( //, $number );
 	my $eNumberString = "";
 
-	my $n = length ( $number ) - 1;
 
-	for ( my $place = $n; $place >= 0 ; $place-- ) {
+	#
+	#  read number from most to least significant digits:
+	#
+	for ( my $place = $n; $place >= 0; $place-- ) {
+		#
+		#  initialize values to emptiness:
+		#
+		my ($aTen, $aOne) = ( 0, 0);  #    ascii ten's and one's place
+		my ($eTen, $eOne) = ('','');  # ethiopic ten's and one's place
 
-		my $pos  = $place % 4;
-		my $aTen = $aOne = 0; my $eTen = $eOne = '';
 
-		if ( $place % 2 ) {  # this handles the first cycle problem, move out of loop later
-			#
-			# numbers starts with a ten
-			#
-			$aTen = $aNumberString[$n-$place]; $place--;
-			$eTen = $ENumbers[$aTen-1+9]      if ( $aTen );
-			$aOne = $aNumberString[$n-$place] if ( $place >= 0 );
-			$eOne = $ENumbers[$aOne-1]        if ( $aOne );
-			$pos--;
-		}
-		else {
-			#
-			# numbers starts with a one
-			#
-			$aOne = $aNumberString[$n-$place];
-			$eOne = $ENumbers[$aOne-1] if ( $aOne );
-		}
+		#
+		#  populate our tens and ones places from the number string:
+		#
+		$aTen = $aNumberString[$n-$place]; $place--;
+		$aOne = $aNumberString[$n-$place];
+		$eTen = $ENumbers[$aTen-1+9]       if ( $aTen );
+		$eOne = $ENumbers[$aOne-1]         if ( $aOne );
 
+
+		#
+		#  pos tracks our 'pos'ition in sequence of 4 digits
+		#  to help determine what separator we need between
+		#  a groupings of tens and ones.
+		#
+		my $pos = ( $place % 4 ) / 2;  # make even/odd 
+
+
+		#
+		#  find a separator, if any, to follow ethiopic ten and one:
+		#
 		my $sep
 		= ( $place )
-		  ? ( $pos )
-		    ? ( $pos==2 && ($aTen || $aOne) )
+		  ? ( $pos ) # odd
+		    ? ( ($eTen ne '') || ($eOne ne '') )
 		      ? '፻'
 		      : ''
 		    : '፼'
 		  : ''
 		;
 
-		if ( ( $place == $n )  # number starts with 1 don't put ፩
-		&& ( $n > 0 )
-		&& ( $aOne == 1 ) )
-		   { $eOne = ''; }
 
-		elsif ( ( $aOne == 1 && $place > 0 )    # no ፩ before ፻ without a ten
-		&& ( $aTen == 0 )
-		&& ( $sep eq '፻' ) )
-		   { $eOne = ''; }
+		#
+		#  if $eOne is an Ethiopic '፩' we want to clear it under
+		#  under special conditions.  These ellision rules could be
+		#  combined into a single big test but gets harder to read
+		#  and manage:
+		#
+		if ( ( $eOne eq '፩' ) && ( $eTen eq '' ) && ( $n > 1 ) ) {
+			if ( $sep eq '፻' ) {
+				#
+				#  A superflous implied ፩ before ፻
+				#
+				$eOne = '';
+			}
+			elsif ( ($place+1) == $n ) {   # recover from initial $place--
+				#
+				#  ፩ is the leading digit.
+				#
+				$eOne = '';
+			}
+		}
 
+
+		#
+		#  put it all together and append to our output number:
+		#
 		$eNumberString .= "$eTen$eOne$sep";	
 	}
 
