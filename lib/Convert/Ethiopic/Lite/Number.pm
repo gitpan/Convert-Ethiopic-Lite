@@ -8,7 +8,7 @@ BEGIN
 	use strict;
 	use vars qw($VERSION @ENumbers %ENumbers);
 
-	$VERSION = '0.10';
+	$VERSION = '0.11';
 
 	require 5.000;
 
@@ -150,7 +150,7 @@ my $number = $_[0]->{number};
 	for ( my $place = $n; $place >= 0 ; $place-- ) {
 
 		my $pos  = $place % 4;
-		my $aTen = $aOne = $eTen = $eOne = '';
+		my $aTen = $aOne = 0; my $eTen = $eOne = '';
 
 		if ( $place % 2 ) {  # this handles the first cycle problem, move out of loop later
 			#
@@ -185,8 +185,8 @@ my $number = $_[0]->{number};
 		&& ( $aOne == 1 ) )
 		   { $eOne = ''; }
 
-		if ( ( $aOne && $aOne == 1 && $place > 0 )    # no ፩ before ፻ without a ten
-		&& ( $aTen && $aTen == 0 )
+		elsif ( ( $aOne == 1 && $place > 0 )    # no ፩ before ፻ without a ten
+		&& ( $aTen == 0 )
 		&& ( $sep eq '፻' ) )
 		   { $eOne = ''; }
 

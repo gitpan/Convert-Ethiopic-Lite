@@ -1,2 +1,5 @@
-0.01  Wed Aug  7 18:36:57 EDT 2002
+0.11  Thu Aug  8 17:09:02 EDT 2002
+	- fixed a truth test that tripped over 0 when we meant "defined"  	
+
+0.10  Wed Aug  7 18:36:57 EDT 2002
 	- Initial release.
