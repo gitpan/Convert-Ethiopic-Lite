@@ -1,0 +1,25 @@
+About This Release
+
+  Version 0.01 is released at this time for the benefit
+  of Convert::Braille::Ethiopic which needs the numeric
+  conversion services.  Convert::Ethiopic::Lite::Date
+  is complete but not offered at this time whilst it
+  undergoes feature de-creep.
+
+Why Convert::Ethiopic::Lite?
+
+  The Convert::Ethiopic package relies on the libeth shared library / dll
+  which might be too heavy duty and resource consuming for most simple
+  tasks.  Also more difficult to get sysadmins to install for people with
+  basic CGI service.  Convert::Ethiopic::Lite offers implementation of
+  the libeth algorithm completely in Perl, taking advantage of simplifications
+  that Perl offers.
+
+What This Package Can Do
+
+  At this point numeral system conversion between Western (Arabic, base 10)
+  and Ethiopic.  Ethiopic numerals sequences must be in UTF-8.   The Ilf-Radix
+  algorithm is applied in representing the Ethiopic sequences.
+
+  Presently the package works best with Perl 5.8.0, it has not been
+  satisfactorily tested on older versions.

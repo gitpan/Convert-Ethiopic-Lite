@@ -1,0 +1,8 @@
+Changes
+MANIFEST
+Makefile.PL
+README
+examples/numbers.pl
+lib/Convert/Ethiopic/Lite/Number.pm
+# lib/Convert/Ethiopic/Lite/Date.pm
+t/numbers.t
