@@ -1,3 +1,6 @@
+0.14  Sat Oct 12 11:30:01 EDT 2002
+	- added an "int" casting to insure integer division.
+
 0.13  Mon Oct  7 13:42:49 EDT 2002
 	- tuned _toEthiopic to be faster for single digit numbers.
 	- fixed typos in comments.

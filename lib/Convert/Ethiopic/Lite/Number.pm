@@ -8,7 +8,7 @@ BEGIN
 	use strict;
 	use vars qw($VERSION @ENumbers %ENumbers);
 
-	$VERSION = '0.13';
+	$VERSION = '0.14';
 
 	require 5.000;
 
@@ -136,7 +136,7 @@ sub _fromEthiopic
 
 	# print "$_ => ";
 
-	$_;
+	int $_;
 }
 
 
@@ -188,9 +188,9 @@ my $number = $_[0]->{number};
 		#
 		#  pos tracks our 'pos'ition in a sequence of 4 digits
 		#  to help determine what separator we need between
-		#  a groupings of tens and ones.
+		#  a grouping of tens and ones.
 		#
-		my $pos = ( $place % 4 ) / 2;  # make even/odd 
+		my $pos = int ( $place % 4 ) / 2;  # make even/odd 
 
 
 		#
@@ -308,10 +308,10 @@ but could be readily adjusted.
 
 =head1 BUGS
 
- None known yet.
+None known yet.
 
 =head1 AUTHOR
 
- Daniel Yacob,  Yacob@EthiopiaOnline.Net
+Daniel Yacob,  Yacob@EthiopiaOnline.Net
 
 =cut

@@ -3,7 +3,7 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
 	'NAME'		=> 'Convert::Ethiopic::Lite::Number',
-	'DISTNAME'		=> 'Convert-Ethiopic-Lite',
+	'DISTNAME'	=> 'Convert-Ethiopic-Lite',
 	'VERSION_FROM'	=> 'lib/Convert/Ethiopic/Lite/Number.pm', # finds $VERSION
 	'AUTHOR'	=> "Daniel Yacob <Yaocb\@EthiopiaOnline.Net>",
 	'ABSTRACT'	=> "Conversion For Ethiopic Numerals and Dates in Perl.",
